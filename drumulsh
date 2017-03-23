@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+// application.php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+if(is_file(__DIR__.'/app/config/.env')) {
+    $dotenv = new Dotenv\Dotenv(__DIR__.'/config');
+    $dotenv->load();
+}
+
+$application = new Application();
+
+$commands = array(new \drumulsh\command\dumpBDDCommand(), new \drumulsh\command\createDbAndUserCommand(),
+    new \drumulsh\command\generationHtaccessCommand(), new \drumulsh\command\generationSettingsSiteCommand(),
+    new \drumulsh\command\suppressionSiteCommand(),new \drumulsh\command\generationSiteCommand(),
+    new \drumulsh\command\syncSiteCommand(), new \drumulsh\command\analyticsSiteCommand(), new \drumulsh\command\analyticsSiteDeleteCommand(),new \drumulsh\command\backupSiteCommand());
+
+$application->addCommands($commands);
+$application->setName("::                                                 ::\n:: drumulsh - a drupal multisite shell application ::\n::                                                 ::");
+$application->run();

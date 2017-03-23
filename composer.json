@@ -1,0 +1,14 @@
+{
+    "require": {
+        "symfony/debug": "^2.8",
+        "symfony/console": "^2.8",
+        "symfony/filesystem": "^2.8",
+        "symfony/process": "^2.8",
+        "symfony/finder": "^2.8",
+        "cocur/slugify": "^2.3",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
