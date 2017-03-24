@@ -67,6 +67,17 @@ Pour configurer votre environnement, deux possibilités s'offrent à vous :
 
 `drumulsh create-site`
 
+![create-site Screenshot](doc/screenshot/create-site.jpg?raw=true "Screenshot create-site")
+
+La commande effectue les taches suivantes : 
+* backup de la base de données source
+* création d'une nouvelle base de données et d'un utilisateur
+* importation de la base source
+* copie des fichiers uploadés du site initial
+* création du fichier de configuration du nouveau site
+* regénération du fichier sites.php
+* regénération du fichier .htaccess
+
 ### Supprimer un site existant
 
 `drumulsh delete-site [sitename]`
