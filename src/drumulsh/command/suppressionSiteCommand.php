@@ -52,6 +52,11 @@ class suppressionSiteCommand extends Command
             return;
         }
 
+        include_once($this->rootDrupalDir.'/sites/'.$this->sitename.'/settings.php');
+        $process = new Process(sprintf('mysql -u root -p -e', $this->rootDrupalDir.'/sites', $this->sitename));
+        $process->run();
+
+
         if(is_dir($this->rootDrupalDir.'/sites/'.$this->sitename)) {
             $process = new Process(sprintf('cd %s && rm -rf %s', $this->rootDrupalDir.'/sites', $this->sitename));
             $process->run();

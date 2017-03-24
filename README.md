@@ -2,7 +2,7 @@
 
 ## Objectifs
 
-L'objectif de ce projet est de fournir une application console utilitaire pour administrer un setup Drupal multi-sites. 
+L'objectif de ce projet est de fournir une application console utilitaire pour administrer un setup Drupal 7 multi-sites. 
 
 ## Fonctionnalités 
 
@@ -38,7 +38,7 @@ Les fonctionnalités de cette ligne de commande sont les suivantes :
 
 ## Installation
 
-Cloner le dépot à l'endroit désiré. Vous pouvez stocker cet utilitaire dans n'importe quel dosser, cela n'a pas d'importance.  
+Cloner le dépot à l'endroit désiré. Vous pouvez stocker cet utilitaire dans n'importe quel dosser, cela n'a pas d'importance.
 
 Rendez vous dans le dossier et lancez la commande suivante :
 
@@ -46,11 +46,20 @@ Rendez vous dans le dossier et lancez la commande suivante :
 
 `composer dump-autoload -o`
 
+Puis vous pouvez utiliser l'application avec :   
+
+`php drumulsh`
+
+Ou rendre le fichier éxécutable (`chmod +x drumulsh`) :
+`./drumulsh`
+
+![Console Screenshot](doc/screenshot/mainconsole.jpg?raw=true "Screenshot console")
+
 ## Configuration de l'environnement
 
 Pour configurer votre environnement, deux possibilités s'offrent à vous : 
 * entrer les paramètres en option de chaque commande
-* créer un fichier de configuration dans lequel la console ira piocher les informations nécéssaires
+* [TODO] créer un fichier de configuration dans lequel la console ira piocher les informations nécéssaires
 
 ## Utilisation de la console
 
@@ -60,7 +69,7 @@ Pour configurer votre environnement, deux possibilités s'offrent à vous :
 
 ### Supprimer un site existant
 
-`drumulsh delete-site`
+`drumulsh delete-site [sitename]`
 
 ### Regénérer le fichier .htaccess
 

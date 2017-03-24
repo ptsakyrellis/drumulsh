@@ -148,7 +148,7 @@ $db_master_pass = '%s';
 $db_slave_host = '%s';
 $db_slave_user = '%s';
 $db_slave_pass = '%s';
-include(dirname(__DIR__).'../main_settings.php');
+include(dirname(__DIR__).'/main_settings.php');
 EOT;
 
         $settingsFileContent = sprintf($settingsFileContent, $this->bddName, $this->masterBDDIP,substr($this->bddName,0,15), $this->bddName, $this->slaveBDDIP,substr($this->bddName,0,15), $this->bddName);
