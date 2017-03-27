@@ -16,6 +16,8 @@ Les fonctionnalités de cette ligne de commande sont les suivantes :
  * Synchroniser un site entre deux environnements
  * Ajouter le site pour un suivi avec Piwik
  * Supprimer un site du suivi Piwik
+ * Backuper un ou l'ensemble des sites
+ * [TODO] Supprimer les backups vieux de plus d'une certaine durée
  
  Les sites crées seront accessibles via des url de la form http://domaine.ext/nom-du-site ou https://domaine.ext/nom-du-site,
  et cela sans création de liens symboliques. 
@@ -101,3 +103,11 @@ La commande effectue les taches suivantes :
 ### Ajouter le suivi Piwik à un site
 
 `drumulsh settings:htaccess`
+
+### Backuper un site
+
+`drumulsh backup-site [drupalRootDir] [sitename]`
+
+### Backuper tous les sites
+
+`drumulsh backup-site [drupalRootDir]`
