@@ -154,7 +154,7 @@ class analyticsSiteCommand extends Command
         $question = new Question('<question>Host proxy ?(défaut: null) : </question>', 'null');
         $this->proxyHost = $helper->ask($input, $output, $question);
 
-        $question = new Question('<question>Port proxy ?(défaut: 8080) : </question>', '9090');
+        $question = new Question('<question>Port proxy ?(défaut: 9090) : </question>', '9090');
         $this->proxyPort = $helper->ask($input, $output, $question);
     }
 }

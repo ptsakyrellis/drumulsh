@@ -50,7 +50,7 @@ class Piwik {
         $this->name = '[UAS] - '.$directory;
         $this->username = 'uas_'.$directory;
         $this->token = $token;
-        $this->piwikUrl = $piwikUrl;
+        $this->piwikUrl = 'https://'.$piwikUrl.'/';
         $this->urls = array(
             sprintf('http://%s/%s', $domain, $directory),
             sprintf('https://%s/%s', $domain, $directory),
@@ -70,12 +70,25 @@ class Piwik {
             if (isset($this->siteId))
                 return $this->siteId;
             $url = sprintf($this->piwikUrl . self::REQUEST_GETSITEID, $this->token, urlencode($this->urls[0]));
-            $result = json_decode($this->request($url));
-            if ($result && count($result) === 1) {
-                $this->inserted = true;
-                $this->siteId = $result[0]->idsite;
-                return $result[0]->idsite;
+            $json = $this->request($url);
+            $result = json_decode($json, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                if (!is_null($result)) {
+                    if(is_array($result) && count($result) > 0) {
+                        $site = $result[0];
+                        $this->inserted = true;
+                        $this->siteId = $site["idsite"];
+
+                        return $this->siteId;
+                    }
+                }
+
+            } else {
+               throw new \Exception("Impossible de parser la chaine json de resultat.");
             }
+
+            throw new \Exception("Impossible de récupérer l'id du site existant.");
         } catch (Exception $exc) {
            throw($exc);
         }
@@ -234,10 +247,9 @@ class Piwik {
             $c = curl_init($url);
             curl_setopt($c, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt ($c, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
 
             if ($this->proxyEnabled) {
-                $c = curl_init($url);
-                curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($c, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
                 curl_setopt($c, CURLOPT_PROXY, $this->proxyHost.':'.$this->proxyPort);
             }
