@@ -35,6 +35,8 @@ class generationSiteCommand extends Command
     private $slaveBDDIP = '127.0.0.1';
     private $bddLogin = 'root';
     private $bddPass = 'sa';
+    private $siteLogin = 'site';
+    private $sitePass = 'pass';
 
     protected function configure()
     {
@@ -93,11 +95,14 @@ class generationSiteCommand extends Command
          * via la commande bdd: create
          */
         $command = $this->getApplication()->find('bdd:createdb');
+
         $arguments = array(
             'command'        => 'bdd:createdb',
             'masterBDDIP'    => $this->masterBDDIP,
             'user'           => $this->bddLogin,
             'pass'           => $this->bddPass,
+            'siteLogin'      => $this->siteLogin,
+            'sitePass'       => $this->sitePass,
             'dbname'         => $this->bddName,
             'dumpfile'       => $filename
         );
@@ -151,7 +156,7 @@ $db_slave_pass = '%s';
 include(dirname(__DIR__).'/main_settings.php');
 EOT;
 
-        $settingsFileContent = sprintf($settingsFileContent, $this->bddName, $this->masterBDDIP,substr($this->bddName,0,15), $this->bddName, $this->slaveBDDIP,substr($this->bddName,0,15), $this->bddName);
+        $settingsFileContent = sprintf($settingsFileContent, $this->bddName, $this->masterBDDIP, $this->siteLogin, $this->sitePass, $this->masterBDDIP, $this->siteLogin, $this->sitePass);
         $res = file_put_contents($this->rootDrupalDir . '/sites/' .  $this->directory . '/settings.php', $settingsFileContent);
 
         if($res === false) {
@@ -276,6 +281,8 @@ EOT;
         $question = new Question('<question>Entrez le nom de la base à sauvegarder (défaut: drupalmaster) : </question>', 'drupalmaster');
         $this->masterDbName = $helper->ask($input, $output, $question);
 
+        $this->siteLogin = 'uasu_'.substr($this->directory, 0,10).'_'.bin2hex(random_bytes(5));
+        $this->sitePass = bin2hex(random_bytes(6));
 
         // Affichage des variables saisies par l'utilisateur
         $output->writeln('<comment>------------------------------</comment>');

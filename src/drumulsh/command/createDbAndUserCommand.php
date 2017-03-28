@@ -33,6 +33,8 @@ class createDbAndUserCommand extends Command
             ->addArgument('masterBDDIP', InputArgument::REQUIRED, 'Hôte du serveur BDD maître.')
             ->addArgument('user', InputArgument::REQUIRED, 'Utilisateur BDD maître.')
             ->addArgument('pass', InputArgument::REQUIRED, 'Password BDD maître.')
+            ->addArgument('siteLogin', InputArgument::REQUIRED, 'Login nouvel utilisateur.')
+            ->addArgument('sitePass', InputArgument::REQUIRED, 'Password nouvel utilisateur.')
             ->addArgument('dbname', InputArgument::REQUIRED, 'Nom de la base à créer.')
             ->addArgument('dumpfile', InputArgument::REQUIRED, 'Fichier de données à insérer dans la nouvelle base.');
     }
@@ -61,7 +63,7 @@ class createDbAndUserCommand extends Command
             escapeshellarg($input->getArgument('user')),
             escapeshellarg($input->getArgument('pass')),
             $input->getArgument('dbname'),
-            substr($input->getArgument('dbname'),0,15), escapeshellarg($input->getArgument('masterBDDIP')),$input->getArgument('dbname')));
+            $input->getArgument('siteLogin'), escapeshellarg($input->getArgument('masterBDDIP')), $input->getArgument('sitePass')));
 
         $process->run();
 

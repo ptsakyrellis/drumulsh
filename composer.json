@@ -6,7 +6,8 @@
         "symfony/process": "^2.8",
         "symfony/finder": "^2.8",
         "cocur/slugify": "^2.3",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "paragonie/random_compat": "^2.0"
     },
     "autoload": {
         "classmap": ["src/"]
