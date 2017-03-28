@@ -24,7 +24,7 @@ class generationSiteCommand extends Command
      * Variables par défaut
      */
     private $rootDrupalDir = '/var/www/usine';
-    private $masterDbName = 'drupalmaster';
+    private $masterSiteDir = 'educ_master';
     private $directory = 'mathematiques';
     private $bddPrefix = 'uas_';
     private $bddName = 'educ_mathematiques';
@@ -60,7 +60,9 @@ class generationSiteCommand extends Command
         /**
          * Création de la BDD par le biais de la commande bdd:dump
          */
-        $filename = time().'_'.$this->masterDbName.'_master_full.sql';
+        $filename = time().'_'.$this->masterSiteDir.'_master_full.sql';
+
+        include_once($this->rootDrupalDir.'/sites/'.$this->masterSiteDir.'/settings.php');
 
         $command = $this->getApplication()->find('bdd:dump');
         $arguments = array(
@@ -68,7 +70,7 @@ class generationSiteCommand extends Command
             'masterBDDIP'    => $this->masterBDDIP,
             'user'           => $this->bddLogin,
             'pass'           => $this->bddPass,
-            'dbname'         => $this->masterDbName,
+            'dbname'         => $db_name, //coming from settings file
             'filename'       => $filename
         );
         $greetInput = new ArrayInput($arguments);
@@ -130,7 +132,7 @@ class generationSiteCommand extends Command
          * Copie des fichiers sur le disque
          */
         $output->writeln('<info>Copie des fichiers sur le disque.</info>');
-        $process = new Process(sprintf('cp -Raf %s/sites/educ_master %s/sites/%s', $this->rootDrupalDir, $this->rootDrupalDir, $this->directory));
+        $process = new Process(sprintf('cp -Raf %s/sites/%s/. %s/sites/%s', $this->rootDrupalDir, $this->masterSiteDir, $this->rootDrupalDir, $this->directory));
         $process->run();
 
         // executes after the command finishes
@@ -278,8 +280,8 @@ EOT;
         $this->bddLogin = $helper->ask($input, $output, $question);
         $question = new Question('<question>Mot de passe utilisateur BDD (défaut: sa) : </question>', 'sa');
         $this->bddPass = $helper->ask($input, $output, $question);
-        $question = new Question('<question>Entrez le nom de la base à sauvegarder (défaut: drupalmaster) : </question>', 'drupalmaster');
-        $this->masterDbName = $helper->ask($input, $output, $question);
+        $question = new Question('<question>Entrez le répertoire du site template (défaut: educ_master) : </question>', 'educ_master');
+        $this->masterSiteDir = $helper->ask($input, $output, $question);
 
         $this->siteLogin = 'u_'.substr($this->directory, 0,5).'_'.bin2hex(random_bytes(4));
         $this->sitePass = bin2hex(random_bytes(6));
@@ -293,7 +295,7 @@ EOT;
         $output->writeln('<comment>Master BDD IP : '.$this->masterBDDIP.'</comment>');
         $output->writeln('<comment>Slave BDD IP : '.$this->slaveBDDIP.'</comment>');
         $output->writeln('<comment>User bdd : '.$this->bddLogin.'</comment>');
-        $output->writeln('<comment>Base à backuper : '.$this->masterDbName.'</comment>');
+        $output->writeln('<comment>Site à dupliquer : '.$this->masterSiteDir.'</comment>');
     }
 
     /**
