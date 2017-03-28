@@ -114,7 +114,7 @@ La commande effectue les taches suivantes :
 
 `drumulsh sync-site <sourceenv> <destenv> <sitename> [drupalRootDir]`
 
-Les différents environnements sont à définir dans _drupalRootDir\sites\all\drush_. 
+Les différents environnements sont à définir dans _drupalRootDir\sites\all\drush_. (Lire à ce sujet la documentation sur les aliases de sites drush : https://github.com/drush-ops/drush/blob/master/examples/example.aliases.drushrc.php )
 
 Par exemple, fichier **preprod.aliases.drushrc.php** : 
  
@@ -173,7 +173,7 @@ La commande effectue les taches suivantes :
 * backup de chaque base de données + tar gz
 * backup de chaque répertoire de fichiers + tar gz
 
-###License
+### License
 Copyright (c) 2017 Philippe Tsakyrellis
 
 Licensed under the MIT license
