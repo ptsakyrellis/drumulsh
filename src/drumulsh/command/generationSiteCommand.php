@@ -281,7 +281,7 @@ EOT;
         $question = new Question('<question>Entrez le nom de la base à sauvegarder (défaut: drupalmaster) : </question>', 'drupalmaster');
         $this->masterDbName = $helper->ask($input, $output, $question);
 
-        $this->siteLogin = 'uasu_'.substr($this->directory, 0,10).'_'.bin2hex(random_bytes(5));
+        $this->siteLogin = 'u_'.substr($this->directory, 0,5).'_'.bin2hex(random_bytes(4));
         $this->sitePass = bin2hex(random_bytes(6));
 
         // Affichage des variables saisies par l'utilisateur
