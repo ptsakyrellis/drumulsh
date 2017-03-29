@@ -84,6 +84,7 @@ class Piwik {
                     }
                 }
 
+                return false;
             } else {
                throw new \Exception("Impossible de parser la chaine json de resultat.");
             }
