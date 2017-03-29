@@ -177,7 +177,7 @@ La commande effectue les taches suivantes :
 
 **Copyright (c) 2017 Ministère de l'Education Nationale** - Rectorat de Toulouse - DSI - Développements académiques - dsi-da_AT_ac-toulouse.fr
 
-* texte complet de la licece CeCILL-B : http://www.cecill.info/licences/Licence_CeCILL-B_V1-fr.html
+* texte complet de la licence CeCILL-B : http://www.cecill.info/licences/Licence_CeCILL-B_V1-fr.html
 * contributeur :
 Philippe Tsakyrellis philippe.tsakyrellis_AT_ac-toulouse.fr
 * librairies utilisées : La liste des librairies utilisées par ce logiciel se trouve dans le fichier [composer.json](composer.json). Les librairies sont distribuées sous leur licences respectives. 
