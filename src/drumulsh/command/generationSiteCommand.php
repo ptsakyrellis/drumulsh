@@ -246,6 +246,12 @@ EOT;
         }
 
         $output->writeln('<info>Site crée avec succès.</info>');
+
+        /**
+         * Vidage du cache pour terminer
+         */
+        $process = new Process(sprintf('cd %s/sites/%s && drush cc all', $this->rootDrupalDir, $this->directory));
+        $process->run();
     }
 
 
