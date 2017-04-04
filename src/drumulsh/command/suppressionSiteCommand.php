@@ -53,9 +53,15 @@ class suppressionSiteCommand extends Command
         }
 
         include_once($this->rootDrupalDir.'/sites/'.$this->sitename.'/settings.php');
-        $process = new Process(sprintf('mysql -u root -p -e', $this->rootDrupalDir.'/sites', $this->sitename));
+        $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "DROP DATABASE %s;"', $db_master_host, $db_master_user, $db_master_pass, $db_name));
         $process->run();
 
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        } else {
+            $output->writeln('<info>La base de données '.$db_name.' a bien été supprimé.</info>');
+        }
 
         if(is_dir($this->rootDrupalDir.'/sites/'.$this->sitename)) {
             $process = new Process(sprintf('cd %s && rm -rf %s', $this->rootDrupalDir.'/sites', $this->sitename));
@@ -70,9 +76,13 @@ class suppressionSiteCommand extends Command
         }
 
 
+        /**
+         * Actualisation du fichier sites
+         * après suppression du site
+         */
         $command = $this->getApplication()->find('settings:sites');
         $arguments = array(
-            'command'        => 'settings:settings',
+            'command'        => 'settings:sites',
             'rootDrupalDir'  => $this->rootDrupalDir,
             'domaine'        => $this->domaine
         );
@@ -92,9 +102,9 @@ class suppressionSiteCommand extends Command
             throw new \Exception();
         }
 
-        /*
+        /**
          * Actualisation du fichier .htaccess
-         *
+         * après suppression du site
          */
         $command = $this->getApplication()->find('settings:htaccess');
         $arguments = array(
@@ -120,5 +130,6 @@ class suppressionSiteCommand extends Command
         }
 
         $output->writeln('<info>Le site a bien été supprimé.</info>');
+        $output->writeln('<info>Si le site était suivi sur piwik, merci de lancer la commande piwik:delete-site.</info>');
     }
 }
