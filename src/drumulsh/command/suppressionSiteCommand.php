@@ -52,17 +52,39 @@ class suppressionSiteCommand extends Command
             return;
         }
 
-        include_once($this->rootDrupalDir.'/sites/'.$this->sitename.'/settings.php');
-        $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "DROP DATABASE %s;"', $db_master_host, $db_master_user, $db_master_pass, $db_name));
-        $process->run();
+        if(is_file($this->rootDrupalDir.'/sites/'.$this->sitename.'/settings.php')) {
+            include_once($this->rootDrupalDir.'/sites/'.$this->sitename.'/settings.php');
 
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        } else {
-            $output->writeln('<info>La base de données '.$db_name.' a bien été supprimé.</info>');
+            // Suppression de la BD
+            $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "DROP DATABASE %s;"', $db_master_host, $db_master_user, $db_master_pass, $db_name));
+            
+            try {
+                $process->run();
+            } catch(\Exception $pfe) {}
+
+            // executes after the command finishes
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+                $output->writeln('<comment>Impossible de supprimer la base de données associée au site, merci de le faire manuellement.</comment>');
+            } else {
+                $output->writeln('<info>La base de données '.$db_name.' a bien été supprimé.</info>');
+            }
+
+            // Suppression du user mysql
+            $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "DROP USER %s@%s;"', $db_master_host, $db_master_user, $db_master_pass, $db_master_user, $db_master_host));
+
+            try {
+                $process->run();
+            } catch(\Exception $pfe) {}
+            // executes after the command finishes
+            if (!$process->isSuccessful()) {
+                $output->writeln('<comment>Impossible de supprimer le user mysql associé au site, merci de le faire manuellement.</comment>');
+            } else {
+                $output->writeln('<info>Le user '.$db_master_user.' a bien été supprimé.</info>');
+            }
         }
 
+        // Suppression du dossier
         if(is_dir($this->rootDrupalDir.'/sites/'.$this->sitename)) {
             $process = new Process(sprintf('cd %s && rm -rf %s', $this->rootDrupalDir.'/sites', $this->sitename));
             $process->run();

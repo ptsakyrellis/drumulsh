@@ -57,13 +57,13 @@ class createDbAndUserCommand extends Command
 
         echo $process->getOutput();
 
-        $output->writeln('<info>Création de l\'utilisateur mysql : '.substr($input->getArgument('dbname'),0,15).'</info>');
+        $output->writeln('<info>Création de l\'utilisateur mysql : '.$input->getArgument('siteLogin').'</info>');
 
-        $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "GRANT ALL ON %s.* to \'%s\'@%s IDENTIFIED BY \'%s\';"', escapeshellarg($input->getArgument('masterBDDIP')),
+        $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "GRANT ALL ON %s.* TO \'%s\'@%s IDENTIFIED BY \'%s\'; GRANT CREATE USER ON *.* TO \'%s\'@%s;"', escapeshellarg($input->getArgument('masterBDDIP')),
             escapeshellarg($input->getArgument('user')),
             escapeshellarg($input->getArgument('pass')),
             $input->getArgument('dbname'),
-            $input->getArgument('siteLogin'), escapeshellarg($input->getArgument('masterBDDIP')), $input->getArgument('sitePass')));
+            $input->getArgument('siteLogin'), escapeshellarg($input->getArgument('masterBDDIP')), $input->getArgument('sitePass'), $input->getArgument('siteLogin'), escapeshellarg($input->getArgument('masterBDDIP'))));
 
         $process->run();
 
