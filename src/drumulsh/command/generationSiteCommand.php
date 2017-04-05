@@ -25,6 +25,7 @@ class generationSiteCommand extends Command
      */
     private $rootDrupalDir = '/var/www/usine';
     private $masterSiteDir = 'educ_master';
+    private $masterDumpFile = 'dump_educ_master_full.sql';
     private $directory = 'mathematiques';
     private $bddPrefix = 'uas_';
     private $bddName = 'educ_mathematiques';
@@ -60,9 +61,14 @@ class generationSiteCommand extends Command
         /**
          * Création de la BDD par le biais de la commande bdd:dump
          */
-        $filename = time().'_'.$this->masterSiteDir.'_master_full.sql';
+        $this->masterDumpFile = time().'_'.$this->masterSiteDir.'_master_full.sql';
 
-        include_once($this->rootDrupalDir.'/sites/'.$this->masterSiteDir.'/settings.php');
+        require $this->rootDrupalDir.'/sites/'.$this->masterSiteDir.'/settings.php';
+
+        if(!isset($db_name)) {
+            $output->writeln('<comment>Impossible de trouver la base de données modèle.</comment>');
+            throw new \Exception();
+        }
 
         $command = $this->getApplication()->find('bdd:dump');
         $arguments = array(
@@ -71,8 +77,9 @@ class generationSiteCommand extends Command
             'user'           => $this->bddLogin,
             'pass'           => $this->bddPass,
             'dbname'         => $db_name, //coming from settings file
-            'filename'       => $filename
+            'filename'       => $this->masterDumpFile
         );
+
         $greetInput = new ArrayInput($arguments);
 
         try {
@@ -106,7 +113,7 @@ class generationSiteCommand extends Command
             'siteLogin'      => $this->siteLogin,
             'sitePass'       => $this->sitePass,
             'dbname'         => $this->bddName,
-            'dumpfile'       => $filename
+            'dumpfile'       => $this->masterDumpFile
         );
         $greetInput = new ArrayInput($arguments);
 
@@ -169,7 +176,7 @@ EOT;
         }
 
         /**
-         * Copie des fichiers sur le disque
+         * Upload file path settings
          */
         $process = new Process(sprintf('cd %s/sites/%s && drush vset file_public_path sites/%s/files', $this->rootDrupalDir, $this->directory, $this->directory));
         $process->run();
@@ -181,6 +188,9 @@ EOT;
             $this->rollback(5, $output);
             throw new \Exception();
         }
+
+        $this->rollback(5, $output);
+        throw new \Exception();
 
         echo $process->getOutput();
 
@@ -318,11 +328,26 @@ EOT;
 
         // Erreur a la création de la base, reste à supprimer le dump
         if($step >= 2) {
-            // pour l'instant la manoeuvre est manuelle dans tous les cas
+           $file =  dirname(__FILE__).'/../../../var/dump/'.$this->masterDumpFile;
+
+            if(is_file($file)) {
+                $process = new Process(sprintf('rm -rf %s', $file));
+                $process->run();
+
+                // executes after the command finishes
+                if (!$process->isSuccessful()) {
+                    throw new ProcessFailedException($process);
+                } else {
+                    $output->writeln('<info>Dump supprimé avec succès</info>');
+                }
+
+            } else {
+                $output->writeln('<info>Le dump du modele avait déjà été supprimé. Reprise de la suppression...</info>');
+            }
         }
 
-        // Erreur à la copie des fichiers, ou a la génération du htaccess ou settings
-        if($step >= 3) {
+        // Erreur postérieure à la configuration du site (settings.php)
+        if($step >= 5) {
             $command = $this->getApplication()->find('delete-site');
             $arguments = array(
                 'command'        => 'delete-site',

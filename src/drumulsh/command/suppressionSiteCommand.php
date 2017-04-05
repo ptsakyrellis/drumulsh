@@ -57,7 +57,7 @@ class suppressionSiteCommand extends Command
 
             // Suppression de la BD
             $process = new Process(sprintf('mysql -h %s -u %s -p%s -e "DROP DATABASE %s;"', $db_master_host, $db_master_user, $db_master_pass, $db_name));
-            
+
             try {
                 $process->run();
             } catch(\Exception $pfe) {}
