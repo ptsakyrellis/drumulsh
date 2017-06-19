@@ -32,7 +32,19 @@ class generationHtaccessCommand extends Command
         $rewriteRules = " ";
         $sites = array_filter(scandir($this->rootDrupalDir  . '/sites'), function($file) { return is_dir($this->rootDrupalDir . '/sites/'.$file); });
 
-        usort($sites, array("drumulsh\command\generationHtaccessCommand", "sortSitesList"));
+        /**
+         * La liste des sites copiée dans le .htaccess pour faire le rewriting
+         * peut entraîner des erreurs si deux sites contiennent une chaine commune matchant le même pattern
+         * Ex :
+         *
+         * RewriteRule ^lettres(.*) $1 [L,QSA]
+         * RewriteRule ^lettres-histoire-geographie(.*) $1 [L,QSA]
+         *
+         * Dans le cas ci-dessus les urls des deux sites vont passer uniquement dans la première règle de rewriting.
+         */
+        array_multisort(array_values($sites), SORT_DESC,
+            array_map(create_function('$v', 'return strlen($v);'), array_keys($sites)),
+            SORT_DESC, $sites);
 
         foreach($sites as $site) {
             if($site != '.' && $site != '..' && $site != 'default' && $site != 'educ_master' && $site != 'all')
@@ -60,35 +72,5 @@ class generationHtaccessCommand extends Command
         }
 
         $output->writeln('<info>Fichier .htaccess généré avec succès.</info>');
-    }
-
-    /**
-     * La liste des sites copiée dans le .htaccess pour faire le rewriting
-     * peut entraîner des erreurs si deux sites contiennent une chaine commune matchant le même pattern
-     * Ex :
-     *
-     * RewriteRule ^lettres(.*) $1 [L,QSA]
-     * RewriteRule ^lettres-histoire-geographie(.*) $1 [L,QSA]
-     *
-     * Dans le cas ci-dessus les urls des deux sites vont passer uniquement dans la première règle de rewriting.
-     */
-     private static function sortSitesList($a, $b) {
-        $pos = strpos($a, $b);
-
-        if ($pos === false) {
-            return strcmp($a, $b);
-        } else {
-            if($pos === 0) {
-                if(strlen($a) > strlen($b)) {
-                    return -1;
-                } else if (strlen($a) === strlen($b)) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        }
-
-        return strcmp($a, $b);
     }
 }
