@@ -72,8 +72,8 @@ class backupSiteCommand extends Command
              * Backup des fichiers sur le disque
              */
             $output->writeln('<info>Copie des fichiers sur le disque.</info>');
-            $process = new Process(sprintf('cd %s/sites/%s && tar -zcvf '.dirname(__FILE__).'/../../../var/backup/%s/%s.tgz .', $this->rootDrupalDir, $siteName, date('Y-m-d'),$siteName.'_files'));
-            $process->run();
+            $command = sprintf('cd %s/sites/%s && tar -zcvf '.dirname(__FILE__).'/../../../var/backup/%s/%s.tgz .', $this->rootDrupalDir, $siteName, date('Y-m-d'),$siteName.'_files');
+            passthru($command);
 
             // désactiver le site en mode maintenance
             $command = sprintf('cd %s/sites/%s && drush vset maintenance_mode 0', $this->rootDrupalDir, $siteName);
