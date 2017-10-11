@@ -183,14 +183,8 @@ EOT;
 
         // executes after the command finishes
         if (!$process->isSuccessful()) {
-            $output->writeln('<comment>Erreur lors du vset drush</comment>');
-            
-            $this->rollback(5, $output);
-            throw new \Exception();
+            $output->writeln('<comment>Erreur possible lors du vset drush, merci de vérifier le chemin des fichiers publics à posteriori</comment>');
         }
-
-        $this->rollback(5, $output);
-        throw new \Exception();
 
         echo $process->getOutput();
 
